@@ -16,7 +16,24 @@
             "request": "launch",
             "name": "Launch Chrome against localhost",
             "url": "http://localhost:3000",
-            "webRoot": "${workspaceFolder}"
+            "webRoot": "${workspaceFolder}",
+        },
+        {
+            // configuration for extension msjsdiag.debugger-for-chrome
+            // 1. Install msjsdiag.debugger-for-chrome
+            // 2. Install Chromium using snap
+            // 4. run "npm start"
+            // 5. start "Linux Launch Chromium against localhost" in vs code 
+            // i dont get it, this seems to be a debugging session nevertheless request is set to "launch"           
+            "type": "pwa-chrome",
+            "request": "launch",
+            "name": "Linux Launch Chromium against localhost",
+            "url": "http://localhost:3000",
+            "webRoot": "${workspaceFolder}",
+            "runtimeExecutable": "/snap/bin/chromium",
+            // "runtimeArgs": [
+            //     "--remote-debugging-port=9222"
+            // ]
         }
     ]
 }

@@ -11,8 +11,8 @@ class QrInvoiceScan extends Component {
 
         this.handleScan = this.handleScan.bind(this)
     }
-    handleScan(data) {
 
+    handleScan(data) {
         var concatedInformation = "";
         var sum = 0;
         var description = [
@@ -29,6 +29,8 @@ class QrInvoiceScan extends Component {
             "Zertifikat-Seriennummer",
             "Sig-Voriger-Beleg"];
 
+        if (this?.state?.result?.scanSuccess)
+            return;
 
         if (this.isValid(data) === true) {
             const values = data.text.trim().split('_').splice(1);
@@ -87,7 +89,6 @@ class QrInvoiceScan extends Component {
                         result.uknownProperty = result.uknownProperty + i + " " + values[i] + " ";
 
                 }
-
             }
 
             result.sum = result.sum.toLocaleString('de-DE', { minimumFractionDigits: 2 });
@@ -108,7 +109,7 @@ class QrInvoiceScan extends Component {
                 this.setState({
                     result: {
                         scanSuccess: false,
-                        scanSuccessMessage: "😑 Kein QR-Code gefunden."
+                        scanSuccessMessage: "🕵️ Suche QR-Code..."
                     }
                 });
     }
@@ -124,16 +125,11 @@ class QrInvoiceScan extends Component {
         console.error(err)
     }
     render() {
-        const previewStyle = {
-            height: 640,
-            width: 480,
-        }
-
         return (
             <div>
                 <QrReader
                     delay={this.state.delay}
-                    style={previewStyle}
+                    style={{ width: '100%' }}
                     onError={this.handleError}
                     onScan={this.handleScan}
                 />
