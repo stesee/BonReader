@@ -1,8 +1,6 @@
 import React, { Component } from 'react'
 import QrReader from 'react-qr-scanner'
 
-export default QrInvoiceScan;
-
 class QrInvoiceScan extends Component {
     constructor(props) {
         super(props)
@@ -142,3 +140,4 @@ class QrInvoiceScan extends Component {
     }
 }
 
+export default QrInvoiceScan;
