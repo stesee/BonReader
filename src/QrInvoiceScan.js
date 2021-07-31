@@ -1,6 +1,8 @@
 import React, { Component } from 'react'
 import QrReader from 'react-qr-scanner'
 
+export default QrInvoiceScan;
+
 class QrInvoiceScan extends Component {
     constructor(props) {
         super(props)
@@ -14,23 +16,20 @@ class QrInvoiceScan extends Component {
 
     handleScan(data) {
 
-        var concatedInformation = "";
         var sum = 0;
-        var description = [
-            "Algorithmus & Signaturprovider",
-            "Kassen-ID",
-            "Belegnummer",
-            "Beleg-Datum",
-            "inkl. 20% Steuer",
-            "inkl. 10% Steuer",
-            "inkl. 13% Steuer",
-            "(0% versteuert)",
-            "inkl. 19% Steuer",
-            "Stand-Umsatz-Zaehler-AES256-ICM",
-            "Zertifikat-Seriennummer",
-            "Sig-Voriger-Beleg"];
-
-      
+        // var description = [
+        //     "Algorithmus & Signaturprovider",
+        //     "Kassen-ID",
+        //     "Belegnummer",
+        //     "Beleg-Datum",
+        //     "inkl. 20% Steuer",
+        //     "inkl. 10% Steuer",
+        //     "inkl. 13% Steuer",
+        //     "(0% versteuert)",
+        //     "inkl. 19% Steuer",
+        //     "Stand-Umsatz-Zaehler-AES256-ICM",
+        //     "Zertifikat-Seriennummer",
+        //     "Sig-Voriger-Beleg"];
 
         if (this.isValid(data) === true) {
             const values = data.text.trim().split('_').splice(1);
@@ -92,9 +91,7 @@ class QrInvoiceScan extends Component {
             }
 
             result.sum = result.sum.toLocaleString('de-DE', { minimumFractionDigits: 2 });
-
             this.setState({ result: result });
-
             return;
         }
         else
@@ -145,4 +142,3 @@ class QrInvoiceScan extends Component {
     }
 }
 
-export default QrInvoiceScan;
