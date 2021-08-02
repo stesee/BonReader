@@ -4,17 +4,14 @@
     // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
     "configurations": [
+
         {
-            "name": "Attach to Chrome",
-            "port": 9222,
-            "request": "attach",
-            "type": "pwa-chrome",
-            "webRoot": "${workspaceFolder}"
-        },
-        {
+             // configuration for extension msjsdiag.debugger-for-chrome
+             // 1. run "npm start"
+             // 2. Start "Windows Launch Chrome against localhost" run and debug session
             "type": "pwa-chrome",
             "request": "launch",
-            "name": "Launch Chrome against localhost",
+            "name": "Windows Launch Chrome against localhost",
             "url": "http://localhost:3000",
             "webRoot": "${workspaceFolder}",
         },
@@ -23,8 +20,7 @@
             // 1. Install msjsdiag.debugger-for-chrome
             // 2. Install Chromium using snap
             // 4. run "npm start"
-            // 5. start "Linux Launch Chromium against localhost" in vs code 
-            // i dont get it, this seems to be a debugging session nevertheless request is set to "launch"           
+            // 5. start "Linux Launch Chromium against localhost" run and debug session
             "type": "pwa-chrome",
             "request": "launch",
             "name": "Linux Launch Chromium against localhost",
