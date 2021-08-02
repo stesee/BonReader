@@ -128,6 +128,7 @@ class QrInvoiceScan extends Component {
                     onError={this.handleError}
                     onScan={this.handleScan}
                     legacyMode={true}
+                    facingMode={"environment"}
                 />
                 {this.state.result.scanSuccess &&
                     <p> {this.state.result.scanSuccessMessage}{this.state.result.sum}€</p>
