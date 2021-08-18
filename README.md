@@ -1,8 +1,14 @@
 # Decodes autrian signed invoices
 
+[![Deploy to surge](https://github.com/stesee/BonReader/actions/workflows/deployToSurge.yml/badge.svg?branch=master)](https://github.com/stesee/BonReader/actions/workflows/deployToSurge.yml)
+
 ## Demo
 
-Visit <https://bonreader.surge.sh/> to decode your invoice qr code
+Visit <https://bonreader.surge.sh/> to decode your invoice qr code.
+
+### Test stage
+
+Visit <https://bonreadertest.surge.sh/> for the bleeding latest test build.
 
 ## History of app
 
