@@ -15,3 +15,9 @@ Some time ago, when there was no pwa technology available I wrote a hybrid app, 
 - <https://www.youtube.com/watch?v=J27NtRInqB8>
 - <https://www.zeolearn.com/magazine/debugging-react-apps-in-visual-studio-code>
 - <https://medium.com/@qasimpkkhi/automate-your-react-app-deploy-with-github-actions-9ed7c8858d4c>
+
+## Build dev time
+
+```bash
+npm start
+```
