@@ -5,9 +5,11 @@ name: Deploy to surge test stage
 
 on:
   push:
-    branches: [ master ]
+    branches:    
+      - '!master'   # excludes master
   pull_request:
-    branches: [ master ]
+    branches:    
+      - '!master'   # excludes master      
 
 jobs:
   build:
