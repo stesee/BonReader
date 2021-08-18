@@ -14,47 +14,12 @@ class QrInvoiceScan extends Component {
   }
 
   handleScan(data) {
-    // var description = [
-    //     "Algorithmus & Signaturprovider",
-    //     "Kassen-ID",
-    //     "Belegnummer",
-    //     "Beleg-Datum",
-    //     "inkl. 20% Steuer",
-    //     "inkl. 10% Steuer",
-    //     "inkl. 13% Steuer",
-    //     "(0% versteuert)",
-    //     "inkl. 19% Steuer",
-    //     "Stand-Umsatz-Zaehler-AES256-ICM",
-    //     "Zertifikat-Seriennummer",
-    //     "Sig-Voriger-Beleg"];
+    const qrCodeParser = new QrCodeParser();
 
-    if (this.isValid(data) === true) {
-      const qrCodeParser = new QrCodeParser();
-      let result = qrCodeParser.Parse(data.text);
-      this.setState({ result: result });
-      return;
-    } else if (data != null && data.text?.length > 0)
-      this.setState({
-        result: {
-          scanSuccess: false,
-          scanSuccessMessage: "😬 QR-Code lesen fehlgeschlagen." + data,
-        },
-      });
-    else if (this?.state?.result?.scanSuccess === false)
-      this.setState({
-        result: {
-          scanSuccess: false,
-          scanSuccessMessage: "🕵️ Suche QR-Code...",
-        },
-      });
+    let result = qrCodeParser.Parse(data?.text);
+    this.setState({ result: result });
   }
 
-  isValid(rawCode128) {
-    if (rawCode128 === null) return false;
-
-    //todo: do some more / real validation
-    return rawCode128?.text.includes("_");
-  }
   handleError(err) {
     console.error(err);
   }
