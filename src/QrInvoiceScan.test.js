@@ -21,7 +21,7 @@ test("should detect valid raw128 string", () => {
   expect(actual).toEqual(true);
 });
 
-test("empty should fail gracefull", () => {
+test("empty should fail graceful", () => {
   const raw128 = " ";
   const qrCodeParser = new QrCodeParser();
 
@@ -34,7 +34,7 @@ test("empty should fail gracefull", () => {
   );
 });
 
-test("validRaw128String should decode successfull", () => {
+test("validRaw128String should decode successful", () => {
   const qrCodeParser = new QrCodeParser();
 
   const actual = qrCodeParser.Parse(validRaw128String);
@@ -42,9 +42,9 @@ test("validRaw128String should decode successfull", () => {
   expect(actual.scanSuccess).toEqual(true);
   expect(actual.sum).toEqual("9,85");
   expect(actual.scanSuccessMessage).toEqual("🤑");
-  expect(actual.algorytmAndProviderInfo).toEqual("R1-AT0");
+  expect(actual.algorithmAndProviderInfo).toEqual("R1-AT0");
   expect(actual.terminalId).toEqual("1010");
-  expect(actual.invoiveId).toEqual("10100110881756");
+  expect(actual.invoiceId).toEqual("10100110881756");
   expect(actual.date).toEqual("2021-08-11T18:39:50");
   expect(actual.twentyPercentTaxSum).toEqual("0,00");
   expect(actual.thirteenPercentTaxSum).toEqual("0,00");
@@ -52,9 +52,9 @@ test("validRaw128String should decode successfull", () => {
   expect(actual.zeroPercentTaxSum).toEqual("9,85");
   expect(actual.nineteenPercentTaxSum).toEqual("0,00");
   expect(actual.aes256icm).toEqual("vDw7aDE=");
-  expect(actual.certificateSerielNumber).toEqual("U:ATU46674503-01");
+  expect(actual.certificateSerialNumber).toEqual("U:ATU46674503-01");
   expect(actual.signaturePreviousInvoice).toEqual("AXH/r5DZr3U=");
-  expect(actual.uknownProperties).toEqual(
+  expect(actual.unknownProperties).toEqual(
     "12 uzFmTg7vUwsTPbuvNz9tnaUCZ2AChSV3RpcTa8lD7fpPWKdjLVJnuWgh6wtdCpFkTvLr621x2+KJBRyvIf/gWw== "
   );
 });

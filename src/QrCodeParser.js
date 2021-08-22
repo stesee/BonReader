@@ -7,14 +7,14 @@ class QrCodeParser {
         scanSuccess: true,
         scanSuccessMessage: "🤑",
         sum: 0,
-        uknownProperties: null,
+        unknownProperties: null,
       };
 
       for (let i = 0; i < values.length; i++) {
         switch (i) {
           case 0:
             //     "Algorithmus & Signaturprovider"
-            result.algorytmAndProviderInfo = values[i];
+            result.algorithmAndProviderInfo = values[i];
             break;
           case 1:
             //     "Kassen-ID"
@@ -22,7 +22,7 @@ class QrCodeParser {
             break;
           case 2:
             //     "Belegnummer"
-            result.invoiveId = values[i];
+            result.invoiceId = values[i];
             break;
           case 3:
             //     "Beleg-Datum"
@@ -59,7 +59,7 @@ class QrCodeParser {
             break;
           case 10:
             //     "Zertifikat-Seriennummer"
-            result.certificateSerielNumber = values[i];
+            result.certificateSerialNumber = values[i];
             break;
           case 11:
             //     "Sig-Voriger-Beleg"
@@ -67,8 +67,8 @@ class QrCodeParser {
             break;
 
           default:
-            result.uknownProperties =
-              result.uknownProperties + i + " " + values[i] + " ";
+            result.unknownProperties =
+              result.unknownProperties + i + " " + values[i] + " ";
         }
       }
 
