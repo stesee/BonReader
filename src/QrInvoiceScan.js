@@ -113,6 +113,7 @@ class QrInvoiceScan extends Component {
             legacyMode={legacyMode}
             maxImageSize={1000}
             delay={this.state.delay}
+            facingMode="rear"
             className="reader-container"
           />
         )}
