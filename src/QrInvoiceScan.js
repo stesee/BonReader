@@ -1,144 +1,130 @@
-import React, { Component } from 'react'
-import QrReader from 'react-qr-scanner'
+import React, { Component } from "react";
+import QrReader from "react-qr-scanner";
+import QrCodeParser from "./QrCodeParser";
 
 class QrInvoiceScan extends Component {
-    constructor(props) {
-        super(props)
-        this.state = {
-            delay: 100,
-            result: 'No result',
-        }
+  constructor(props) {
+    super(props);
+    this.state = {
+      cameraId: undefined,
+      delay: 500,
+      devices: [],
+      loading: false,
+      result: "No result",
+    };
 
-        this.handleScan = this.handleScan.bind(this)
-    }
+    this.handleScan = this.handleScan.bind(this);
+  }
 
-    handleScan(data) {
+  componentWillMount() {
+    const { selectFacingMode } = this.props;
 
-        var sum = 0;
-        // var description = [
-        //     "Algorithmus & Signaturprovider",
-        //     "Kassen-ID",
-        //     "Belegnummer",
-        //     "Beleg-Datum",
-        //     "inkl. 20% Steuer",
-        //     "inkl. 10% Steuer",
-        //     "inkl. 13% Steuer",
-        //     "(0% versteuert)",
-        //     "inkl. 19% Steuer",
-        //     "Stand-Umsatz-Zaehler-AES256-ICM",
-        //     "Zertifikat-Seriennummer",
-        //     "Sig-Voriger-Beleg"];
+    if (navigator && selectFacingMode) {
+      this.setState({
+        loading: true,
+      });
 
-        if (this.isValid(data) === true) {
-            const values = data.text.trim().split('_').splice(1);
-
-            let result = {
-                scanSuccess: true,
-                scanSuccessMessage: "🤑",
-                sum: sum,
+      navigator.mediaDevices
+        .enumerateDevices()
+        .then((devices) => {
+          const videoSelect = [];
+          devices.forEach((device) => {
+            if (device.kind === "videoinput") {
+              videoSelect.push(device);
             }
-
-            for (let i = 0; i < values.length; i++) {
-                switch (i) {
-                    case 0:
-                        result.algorytmAndProviderInfo = values[i];
-                        break;
-                    case 1:
-                        result.terminalId = values[i];
-                        break;
-                    case 2:
-                        result.invoiveId = values[i];
-                        break;
-                    case 3:
-                        result.date = values[i];
-                        break;
-                    case 4:
-                        result.twentyPercentTaxSum = values[i];
-                        result.sum = result.sum + parseFloat(values[i].replace(",", "."))
-                        break;
-                    case 5:
-                        result.tenPercentTaxSum = values[i];
-                        result.sum = result.sum + parseFloat(values[i].replace(",", "."))
-                        break;
-                    case 6:
-                        result.thirteenPercentTaxSum = values[i];
-                        result.sum = result.sum + parseFloat(values[i].replace(",", "."))
-                        break;
-                    case 7:
-                        result.zeroPercentTaxSum = values[i];
-                        result.sum = result.sum + parseFloat(values[i].replace(",", "."))
-                        break;
-                    case 8:
-                        result.nineteenPercentTaxSum = values[i];
-                        result.sum = result.sum + parseFloat(values[i].replace(",", "."))
-                        break;
-                    case 9:
-                        result.aes256icm = values[i];
-                        break;
-                    case 10:
-                        result.certificateSerielNumber = values[i];
-                        break;
-                    case 11:
-                        result.signaturePreviousInvoice = values[i];
-                        break;
-
-                    default:
-                        result.uknownProperty = result.uknownProperty + i + " " + values[i] + " ";
-
-                }
-            }
-
-            result.sum = result.sum.toLocaleString('de-DE', { minimumFractionDigits: 2 });
-            this.setState({ result: result });
-            return;
-        }
-        else
-            if (data != null && data.text?.length > 0)
-                this.setState({
-                    result: {
-                        scanSuccess: false,
-                        scanSuccessMessage: "😬 QR-Code lesen fehlgeschlagen." + data
-                    }
-                });
-            else if (this?.state?.result?.scanSuccess === false)
-                this.setState({
-                    result: {
-                        scanSuccess: false,
-                        scanSuccessMessage: "🕵️ Suche QR-Code..."
-                    }
-                });
+          });
+          return videoSelect;
+        })
+        .then((devices) => {
+          this.setState({
+            cameraId: devices[0].deviceId,
+            devices,
+            loading: false,
+          });
+        })
+        .catch((error) => {
+          console.log(error);
+        });
     }
+  }
 
-    isValid(rawCode128) {
-        if (rawCode128 === null)
-            return false;
+  selectCamera = () => {
+    return this.state.cameraId;
+  };
 
-        //todo: do some more / real validation
-        return rawCode128?.text.includes("_");
-    }
-    handleError(err) {
-        console.error(err)
-    }
-    render() {
-        return (
-            <div>
-                <QrReader
-                    delay={this.state.delay}
-                    style={{ width: '100%' }}
-                    onError={this.handleError}
-                    onScan={this.handleScan}
-                    legacyMode={true}
-                    facingMode={"environment"}
-                />
-                {this.state.result.scanSuccess &&
-                    <p> {this.state.result.scanSuccessMessage}{this.state.result.sum}€</p>
-                }
-                {!this.state.result.scanSuccess &&
-                    <p> {this.state.result.scanSuccessMessage}</p>
-                }
-            </div>
-        )
-    }
+  handleScan(data) {
+    const qrCodeParser = new QrCodeParser();
+
+    let result = qrCodeParser.Parse(data?.text);
+    this.setState({ result: result });
+  }
+
+  handleError(err) {
+    console.error(err);
+  }
+
+  render() {
+    const { selectFacingMode, selectDelay, legacyMode } = this.props;
+    const { cameraId, devices } = this.state;
+
+    const previewStyle = { width: "100%" };
+    return (
+      <div>
+        {selectFacingMode && devices.length && (
+          <select
+            onChange={(e) => {
+              const value = e.target.value;
+              this.setState({ cameraId: undefined }, () => {
+                this.setState({ cameraId: value });
+              });
+            }}
+          >
+            {devices.map((deviceInfo, index) => (
+              <React.Fragment key={deviceInfo.deviceId}>
+                <option value={deviceInfo.deviceId}>
+                  {deviceInfo.label || `camera ${index}`}
+                </option>
+              </React.Fragment>
+            ))}
+          </select>
+        )}
+        {selectDelay && (
+          <div>
+            <button onClick={() => this.setState({ delay: false })}>
+              Disable Delay
+            </button>
+            <input
+              placeholder="Delay in ms"
+              type="number"
+              value={this.state.delay}
+              onChange={(e) =>
+                this.setState({ delay: parseInt(e.target.value) })
+              }
+            />
+          </div>
+        )}
+        {(cameraId || !selectFacingMode) && (
+          <QrReader
+            chooseDeviceId={this.selectCamera}
+            style={previewStyle}
+            onError={this.handleError}
+            onScan={this.handleScan}
+            ref="reader"
+            legacyMode={legacyMode}
+            maxImageSize={1000}
+            delay={this.state.delay}
+            className="reader-container"
+            facingMode="rear"
+          />
+        )}
+        {legacyMode && (
+          <button onClick={() => this.refs.reader.openImageDialog()}>
+            Open Image Dialog
+          </button>
+        )}
+      </div>
+    );
+  }
 }
 
 export default QrInvoiceScan;

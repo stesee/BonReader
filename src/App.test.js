@@ -1,5 +1,4 @@
-import { render, screen } from '@testing-library/react';
-import App from './App';
+import { render, screen } from "@testing-library/react";
+import App from "./App";
 
-test('this is not the missing test you are looking for', () => {
-});
+test("afaik there is no way to test webworker based components", () => {});
