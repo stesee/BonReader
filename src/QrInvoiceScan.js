@@ -37,7 +37,9 @@ function BarcodeScanner(props) {
             const qrCodeParser = new QrCodeParser();
             const parseOutcome = qrCodeParser.Parse(rawText);
             console.log(parseOutcome);
-            alert(parseOutcome);
+            if (parseOutcome.scanSuccess === true)
+              alert(`${parseOutcome.scanSuccessMessage} ${parseOutcome.sum}`);
+            else alert(parseOutcome.scanSuccessMessage);
           }
         })
         .then((res) => console.log("result", res))
