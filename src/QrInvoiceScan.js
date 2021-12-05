@@ -1,130 +1,72 @@
-import React, { Component } from "react";
-import QrReader from "react-qr-scanner";
-import QrCodeParser from "./QrCodeParser";
+import React, { useEffect, useState } from "react";
+import {
+  BarcodeFormat,
+  BrowserMultiFormatReader,
+  DecodeHintType,
+} from "@zxing/library";
 
-class QrInvoiceScan extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      cameraId: undefined,
-      delay: 500,
-      devices: [],
-      loading: false,
-      result: "No result",
-    };
+function BarcodeScanner(props) {
+  const [videoInputDevices, setVideoInputDevices] = useState([]);
+  const [selectedVideoDevice, selectVideoDevice] = useState("");
+  const hints = new Map();
+  const formats = [
+    BarcodeFormat.CODE_128,
+    BarcodeFormat.CODE_39,
+    BarcodeFormat.EAN_8,
+    BarcodeFormat.EAN_13,
+  ];
+  hints.set(DecodeHintType.POSSIBLE_FORMATS, formats);
+  const reader = new BrowserMultiFormatReader(hints);
+  useEffect(() => {
+    (async () => {
+      const videoInputDeviceList = await reader.listVideoInputDevices();
+      setVideoInputDevices(videoInputDeviceList);
+      if (videoInputDeviceList.length > 0) {
+        selectVideoDevice(videoInputDeviceList[0].deviceId);
+      }
+    })();
+  }, []);
 
-    this.handleScan = this.handleScan.bind(this);
-  }
-
-  componentWillMount() {
-    const { selectFacingMode } = this.props;
-
-    if (navigator && selectFacingMode) {
-      this.setState({
-        loading: true,
-      });
-
-      navigator.mediaDevices
-        .enumerateDevices()
-        .then((devices) => {
-          const videoSelect = [];
-          devices.forEach((device) => {
-            if (device.kind === "videoinput") {
-              videoSelect.push(device);
-            }
-          });
-          return videoSelect;
+  useEffect(() => {
+    if (selectedVideoDevice) {
+      reader.reset();
+      reader
+        .decodeFromVideoDevice(selectedVideoDevice, "videoElement", (res) => {
+          if (res) {
+            console.log("result is", res);
+            alert(res.getText());
+          }
         })
-        .then((devices) => {
-          this.setState({
-            cameraId: devices[0].deviceId,
-            devices,
-            loading: false,
-          });
-        })
-        .catch((error) => {
-          console.log(error);
-        });
+        .then((res) => console.log("result", res))
+        .catch((err) => console.log("error", err));
     }
-  }
+  }, [selectedVideoDevice]);
 
-  selectCamera = () => {
-    return this.state.cameraId;
-  };
-
-  handleScan(data) {
-    const qrCodeParser = new QrCodeParser();
-
-    let result = qrCodeParser.Parse(data?.text);
-    this.setState({ result: result });
-  }
-
-  handleError(err) {
-    console.error(err);
-  }
-
-  render() {
-    const { selectFacingMode, selectDelay, legacyMode } = this.props;
-    const { cameraId, devices } = this.state;
-
-    const previewStyle = { width: "100%" };
-    return (
-      <div>
-        {selectFacingMode && devices.length && (
-          <select
-            onChange={(e) => {
-              const value = e.target.value;
-              this.setState({ cameraId: undefined }, () => {
-                this.setState({ cameraId: value });
-              });
-            }}
-          >
-            {devices.map((deviceInfo, index) => (
-              <React.Fragment key={deviceInfo.deviceId}>
-                <option value={deviceInfo.deviceId}>
-                  {deviceInfo.label || `camera ${index}`}
-                </option>
-              </React.Fragment>
-            ))}
-          </select>
-        )}
-        {selectDelay && (
-          <div>
-            <button onClick={() => this.setState({ delay: false })}>
-              Disable Delay
-            </button>
-            <input
-              placeholder="Delay in ms"
-              type="number"
-              value={this.state.delay}
-              onChange={(e) =>
-                this.setState({ delay: parseInt(e.target.value) })
-              }
-            />
-          </div>
-        )}
-        {(cameraId || !selectFacingMode) && (
-          <QrReader
-            chooseDeviceId={this.selectCamera}
-            style={previewStyle}
-            onError={this.handleError}
-            onScan={this.handleScan}
-            ref="reader"
-            legacyMode={legacyMode}
-            maxImageSize={1000}
-            delay={this.state.delay}
-            className="reader-container"
-            facingMode="rear"
-          />
-        )}
-        {legacyMode && (
-          <button onClick={() => this.refs.reader.openImageDialog()}>
-            Open Image Dialog
-          </button>
-        )}
-      </div>
-    );
-  }
+  return (
+    <div
+      onChange={(event) => {
+        const deviceId = event.target.value;
+        selectVideoDevice(deviceId);
+      }}
+    >
+      <select>
+        {videoInputDevices.map((inputDevice, index) => {
+          return (
+            <option value={inputDevice.deviceId} key={index}>
+              {inputDevice.label || inputDevice.deviceId}
+            </option>
+          );
+        })}
+      </select>
+      <br />
+      <video
+        id="videoElement"
+        width="600"
+        height="400"
+        style={{ border: "1px solid gray" }}
+      />
+    </div>
+  );
 }
 
-export default QrInvoiceScan;
+export default BarcodeScanner;
