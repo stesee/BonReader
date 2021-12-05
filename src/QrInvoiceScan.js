@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import {
   BarcodeFormat,
   BrowserMultiFormatReader,
@@ -8,16 +8,17 @@ import {
 function BarcodeScanner(props) {
   const [videoInputDevices, setVideoInputDevices] = useState([]);
   const [selectedVideoDevice, selectVideoDevice] = useState("");
-  const hints = new Map();
-  const formats = [
-    BarcodeFormat.CODE_128,
-    BarcodeFormat.CODE_39,
-    BarcodeFormat.EAN_8,
-    BarcodeFormat.EAN_13,
-  ];
-  hints.set(DecodeHintType.POSSIBLE_FORMATS, formats);
-  const reader = new BrowserMultiFormatReader(hints);
-  useEffect(() => {
+
+  const reader = useMemo(() => {
+    const hints = new Map();
+    const formats = [
+      BarcodeFormat.CODE_128,
+      BarcodeFormat.CODE_39,
+      BarcodeFormat.EAN_8,
+      BarcodeFormat.EAN_13,
+    ];
+    hints.set(DecodeHintType.POSSIBLE_FORMATS, formats);
+    const reader = new BrowserMultiFormatReader(hints);
     (async () => {
       const videoInputDeviceList = await reader.listVideoInputDevices();
       setVideoInputDevices(videoInputDeviceList);
@@ -25,6 +26,8 @@ function BarcodeScanner(props) {
         selectVideoDevice(videoInputDeviceList[0].deviceId);
       }
     })();
+
+    return reader;
   }, []);
 
   useEffect(() => {
@@ -40,7 +43,7 @@ function BarcodeScanner(props) {
         .then((res) => console.log("result", res))
         .catch((err) => console.log("error", err));
     }
-  }, [selectedVideoDevice]);
+  }, [reader, selectedVideoDevice]);
 
   return (
     <div
