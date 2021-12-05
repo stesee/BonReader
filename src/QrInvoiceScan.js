@@ -4,6 +4,7 @@ import {
   BrowserMultiFormatReader,
   DecodeHintType,
 } from "@zxing/library";
+import QrCodeParser from "./QrCodeParser";
 
 function BarcodeScanner(props) {
   const [videoInputDevices, setVideoInputDevices] = useState([]);
@@ -32,7 +33,11 @@ function BarcodeScanner(props) {
         .decodeFromVideoDevice(selectedVideoDevice, "videoElement", (res) => {
           if (res) {
             console.log("result is", res);
-            alert(res.getText());
+            const rawText = res.getText();
+            const qrCodeParser = new QrCodeParser();
+            const parseOutcome = qrCodeParser.Parse(rawText);
+            console.log(parseOutcome);
+            alert(parseOutcome);
           }
         })
         .then((res) => console.log("result", res))
