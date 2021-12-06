@@ -16,15 +16,10 @@ jobs:
       run: npm ci
     - name: Install Playwright
       run: npx playwright install --with-deps
-    - name: Run application
-      run: |
-        npm ci
-        npm run build --if-present
-        npm start & npx wait-on http://localhost:3000
     - name: Run Playwright tests
       run: npx playwright test
     - uses: actions/upload-artifact@v2
       if: always()
       with:
         name: playwright-report
-        path: test-results/
+        path: playwright-report/
