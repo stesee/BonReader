@@ -1,5 +1,5 @@
 import "./App.css";
-import React, { Suspense, lazy } from 'react';
+import React, { Suspense } from 'react';
 
 const QrInvoiceScan = React.lazy(() => import('./QrInvoiceScan'));
 function App() {
