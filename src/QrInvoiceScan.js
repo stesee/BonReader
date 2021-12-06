@@ -1,4 +1,4 @@
-import React, {  useMemo, useState } from "react";
+import React, { useMemo, useState } from "react";
 import {
   BarcodeFormat,
   BrowserMultiFormatReader,
@@ -6,39 +6,41 @@ import {
 } from "@zxing/library";
 import QrCodeParser from "./QrCodeParser";
 
+
 function BarcodeScanner(props) {
   const [videoInputDevices, setVideoInputDevices] = useState([]);
   const [selectedVideoDevice, selectVideoDevice] = useState("");
+  const [sum, setSum] = useState("");
 
-   useMemo(() => {
+  useMemo(() => {
     const hints = new Map();
     const formats = [BarcodeFormat.QR_CODE];
     hints.set(DecodeHintType.POSSIBLE_FORMATS, formats);
     const reader = new BrowserMultiFormatReader(hints);
     (async () => {
-      console.log(2);
       const videoInputDeviceList = await reader.listVideoInputDevices();
       setVideoInputDevices(videoInputDeviceList);
       if (videoInputDeviceList.length > 0) {
-        selectVideoDevice(videoInputDeviceList[0].deviceId);
+        setTimeout(() => {
+          
+          selectVideoDevice(videoInputDeviceList[0].deviceId);
+        }, 2000);
       }
     })();
-      reader
-        .decodeFromVideoDevice(selectedVideoDevice, "videoElement", (res) => {
-          if (res) {
-            console.log("result is", res);
-            const rawText = res.getText();
-            const qrCodeParser = new QrCodeParser();
-            const parseOutcome = qrCodeParser.Parse(rawText);
-            console.log(parseOutcome);
-            if (parseOutcome.scanSuccess === true)
-              alert(`${parseOutcome.scanSuccessMessage} ${parseOutcome.sum}`);
-            else alert(parseOutcome.scanSuccessMessage);
-          }
-        })
-        .then((res) => console.log("result", res))
-        .catch((err) => console.log("error", err));
 
+    reader
+      .decodeFromVideoDevice(selectedVideoDevice, "videoElement", (res) => {
+        if (res) {
+          const rawText = res.getText();
+          const qrCodeParser = new QrCodeParser();
+          const parseOutcome = qrCodeParser.Parse(rawText);
+          if (parseOutcome.scanSuccess === true)
+          setSum( `${parseOutcome.scanSuccessMessage} ${parseOutcome.sum}`);
+          else alert(parseOutcome.scanSuccessMessage);
+        }
+      })
+      .then((res) => console.log("result", res))
+      .catch((err) => console.log("error", err));
   }, [selectedVideoDevice]);
 
   return (
@@ -64,6 +66,7 @@ function BarcodeScanner(props) {
         height="400"
         style={{ border: "1px solid gray" }}
       />
+      <div id="sum">{sum}</div>
     </div>
   );
 }
