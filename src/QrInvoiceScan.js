@@ -20,11 +20,8 @@ function BarcodeScanner(props) {
     (async () => {
       const videoInputDeviceList = await reader.listVideoInputDevices();
       setVideoInputDevices(videoInputDeviceList);
-      if (videoInputDeviceList.length > 0) {
-        setTimeout(() => {
-          
+      if (videoInputDeviceList.length > 0 && selectedVideoDevice==null) {
           selectVideoDevice(videoInputDeviceList[0].deviceId);
-        }, 2000);
       }
     })();
 
