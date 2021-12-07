@@ -40,7 +40,7 @@ test("validRaw128String should decode successful", () => {
   const actual = qrCodeParser.Parse(validRaw128String);
 
   expect(actual.scanSuccess).toEqual(true);
-  // next line failes on node 12
+  // next line fails on node 12
   expect(actual.sum).toEqual("9,85");
   expect(actual.scanSuccessMessage).toEqual("🤑");
   expect(actual.algorithmAndProviderInfo).toEqual("R1-AT0");
