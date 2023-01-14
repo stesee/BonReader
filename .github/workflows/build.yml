@@ -1,4 +1,4 @@
-name: Deploy to surge
+name: Build and deploy
 env:
   SURGE_TOKEN_EXISTS: ${{ secrets.SURGE_TOKEN }}
 on:
